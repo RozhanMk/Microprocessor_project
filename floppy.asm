@@ -195,26 +195,43 @@ MOVE_BLOCK PROC NEAR
 	MOV DX, BLOCK_X
 	MOV [SI], DX
 
-	MOV AX, HALF_WINDOW_WIDTH
-	CMP BLOCK_X, AX
-	JG CREATE_BLOCK
+	
+	CMP BLOCK_X, 0
+	JLE CREATE_BLOCK
 
 	RET
 	
 	CREATE_BLOCK:
-		;CALL CREATE_NEW_BLOCK
+		CALL CREATE_NEW_BLOCK
 		RET
 MOVE_BLOCK ENDP
 
 CREATE_NEW_BLOCK PROC NEAR
-	MOV AH, 00h  ; interrupts to get system time        
-	INT 1AH      ; CX:DX now hold number of clock ticks since midnight      
+	MOV AH, 2CH
+	INT 21H
+	MOV AL,DL
+	MOV AH,0
+	MOV CL,20
+	DIV CL
+	MOV BL, AL
+	INC BL	;BL between 1 and 5 - as the new block_count
 
-	mov  ax, dx
-	xor  dx, dx
-	mov  cx, 5  
-	div  cx       ; here dx contains the remainder of the division - from 0 to 4
-	INC DX		 ;
+	MOV SI, OFFSET BLOCKS_COUNT
+	ADD SI, BLOCK_INDEX
+	MOV [SI], BL
+
+	
+	MOV SI, OFFSET BLOCKS_X
+	ADD SI, BLOCK_INDEX
+	MOV AX, WINDOW_WIDTH
+	MOV [SI], AX
+
+	;//TO DO: CHOOSE BLOCK_Y RANDOMLY//
+	MOV SI, OFFSET BLOCKS_Y
+	ADD SI, BLOCK_INDEX
+	MOV AX, 65H
+	MOV [SI], AX
+
 	RET
 CREATE_NEW_BLOCK ENDP
 
