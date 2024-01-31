@@ -5,6 +5,7 @@ WINDOW_WIDTH DW 140H
 WINDOW_LENGTH DW 0C8H
 HALF_WINDOW_WIDTH DW 050H
 TIME_AUX DB 0
+SEED DW 1234D
 BIRD_X DW  0CH	
 BIRD_Y DW  0CH
 BIRD_INITIAL_X DW 0AH
@@ -269,7 +270,8 @@ CREATE_NEW_BLOCK PROC
 		MOV CL,20
 		DIV CL
 		MOV BL, AL
-		INC BL	;BL between 1 and 5 - as the new block_count
+		INC BL	;BL is between 1 and 5 as the new block_count
+
 
 	MOV SI, OFFSET BLOCKS_COUNT
 	ADD SI, BLOCK_INDEX
@@ -281,10 +283,23 @@ CREATE_NEW_BLOCK PROC
 	MOV [SI], AX
 
 	;//TO DO: CHOOSE BLOCK_Y RANDOMLY//
+	RANDOM_Y:
+		mov ax, SEED   
+		mov cx, 11021D  ; Multiplier
+		mov dx, 2213D   ; Increment
+		mov bx, 131D   ; Modulus
+
+		; random number using LCG algorithm
+		mul cx          ; ax = ax * cx
+		add ax, dx      ; ax = ax + dx
+		MOV DX, 0
+		div bx          ; (remainder is the random number) dx between 0 and 130
+		MOV SEED, DX
+		add DX, 10D      ; Random number between 10 and 140
+		
 	MOV SI, OFFSET BLOCKS_Y
 	ADD SI, BLOCK_INDEX
-	MOV AX, 65H
-	MOV [SI], AX
+	MOV [SI], DX
 
 	RET
 CREATE_NEW_BLOCK ENDP
