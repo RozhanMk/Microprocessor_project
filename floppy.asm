@@ -12,7 +12,7 @@ SCREEN_DELAY DB 02h
 SECONDS_JUMPING DW 02H
 
 ACCELERATION DW 01H
-SEED DW 1234D
+SEED DW 1234h
 
 BIRD_X DW  0CH	
 BIRD_Y DW  0CH
@@ -343,14 +343,18 @@ CREATE_NEW_BLOCK PROC
 		mov ax, SEED   
 		mov cx, 11021D  ; Multiplier
 		mov dx, 2213D   ; Increment
-		mov bx, 131D   ; Modulus
+		mov bx, 5000h   ; Modulus	
 
 		; random number using LCG algorithm
 		mul cx          ; ax = ax * cx
 		add ax, dx      ; ax = ax + dx
 		MOV DX, 0
-		div bx          ; (remainder is the random number) dx between 0 and 130
+		div bx          ; (remainder is the random number) dx between 0 and 7FFF
 		MOV SEED, DX
+		MOV AX, DX
+		MOV BX, 131D
+		MOV DX, 0	 
+		DIV BX			; cause I want random num between 0-130
 		add DX, 10D      ; Random number between 10 and 140
 		
 	MOV SI, OFFSET BLOCKS_Y
@@ -385,8 +389,6 @@ CHECK_JUMP PROC
 		DIV BX
 		NEG AX
 		MOV CX, AX ;CX = -1/2*gt^2 / 10
-		
-	
 
 		SUB BIRD_Y, CX
 
@@ -435,7 +437,6 @@ CLEAR_SCREEN PROC
 	CLEAR_SCREEN ENDP
 
 DELAY PROC NEAR
-    
     MOV AH,2Ch
     INT 21h
     MOV BL, DL
