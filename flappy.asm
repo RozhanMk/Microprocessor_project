@@ -26,7 +26,7 @@ JUMP_VELOCITY_X DW 01H	;constant
 
 BLOCKS_X DW 120H, 100H, 80H, 60h	;initial position of blocks
 BLOCKS_Y DW 0FH, 45H, 0A8H, 0B3H	;initial position of blocks (these will be chosen randomly when the bird goes further)
-BLOCKS_COUNT DW 5H, 1H, 2H
+BLOCKS_COUNT DW 5H, 1H, 2H, 4h
 BLOCK_X DW 0
 BLOCK_Y DW 0
 BLOCK_WIDTH DW 03H
@@ -287,7 +287,7 @@ MOVE_ALL_BLOCKS PROC NEAR
 		
 		CALL MOVE_BLOCK
 		ADD BLOCK_INDEX, 2H
-		CMP BLOCK_INDEX, 4H		; there are only 3 blocks on screen
+		CMP BLOCK_INDEX, 6H		; there are only 4 blocks on screen
 		JLE EACH_BLOCK
 	RET
 	
