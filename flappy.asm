@@ -24,8 +24,8 @@ BIRD_VELOCITY_X DW 01H	;constant
 JUMP_VELOCITY_Y DW 20H
 JUMP_VELOCITY_X DW 01H	;constant
 
-BLOCKS_X DW 120H, 100H, 80H
-BLOCKS_Y DW 0FH, 45H, 0A8H
+BLOCKS_X DW 120H, 100H, 80H, 60h	;initial position of blocks
+BLOCKS_Y DW 0FH, 45H, 0A8H, 0B3H	;initial position of blocks (these will be chosen randomly when the bird goes further)
 BLOCKS_COUNT DW 5H, 1H, 2H
 BLOCK_X DW 0
 BLOCK_Y DW 0
@@ -138,7 +138,7 @@ DRAW_ALL_BLOCKS PROC
 		
 		CALL DRAW_BLOCK
 		ADD BLOCK_INDEX, 2H		; add 2 to index cause we have word arrays
-		CMP BLOCK_INDEX, 4H		; there are only 3 blocks at any time
+		CMP BLOCK_INDEX, 6H		; there are only 4 blocks at any time
 		JLE EACH_BLOCK
 	RET
 	DRAW_ALL_BLOCKS ENDP
