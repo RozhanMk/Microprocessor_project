@@ -312,7 +312,7 @@ MOVE_BLOCK PROC NEAR
 	MOVE_BLOCK ENDP
 
 CREATE_NEW_BLOCK PROC
-	RANDOM_COUNT:
+	RANDOM_COUNT:	;getting a Random number(between 1-5) based on system time
 		MOV AH, 2CH
 		INT 21H
 		MOV AL,DL
@@ -345,10 +345,10 @@ CREATE_NEW_BLOCK PROC
 		div bx          ; (remainder is the random number) dx between 0 and 7FFF
 		MOV SEED, DX
 		MOV AX, DX
-		MOV BX, 131D
+		MOV BX, 131D	; cause I want random num between 0-130
 		MOV DX, 0	 
-		DIV BX			; cause I want random num between 0-130
-		add DX, 10D      ; Random number between 10 and 140
+		DIV BX		; cause I want random num between 0-130
+		add DX, 10D     ; Random number between 10 and 140
 		
 	MOV SI, OFFSET BLOCKS_Y
 	ADD SI, BLOCK_INDEX
